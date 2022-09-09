@@ -19,8 +19,9 @@ class _ScreenTopicState extends State<ScreenTopic> {
 
   final BlocTopic _bloc = BlocTopic();
   late final PagingController<int, ModelEntry> _pagingController;
+  bool didInitializePagingController = false;
   int startPage = -1;
-
+  Set<int> requestedPages = {};
   @override
   void initState() {
     super.initState();
@@ -28,7 +29,13 @@ class _ScreenTopicState extends State<ScreenTopic> {
   }
 
   void _initializePager(){
+    didInitializePagingController = true;
+    _pagingController = PagingController(firstPageKey: startPage);
     _pagingController.addPageRequestListener((pageKey) {
+      if (requestedPages.contains(pageKey)) {
+        return;
+      }
+      requestedPages.add(pageKey);
       _bloc.add(EventTopicGet(widget.id, pageKey));
     });
   }
@@ -37,8 +44,7 @@ class _ScreenTopicState extends State<ScreenTopic> {
     if(state is StateTopicDidReceive){
       if (startPage == -1) {
         startPage = state.topic.pageCount;
-        _pagingController = PagingController(firstPageKey: startPage);
-        _initializePager();
+         _initializePager();
         setState(() {});
       }else{
         if (state.topic.page == 1 && state.topic.pageCount > 1) {
@@ -75,13 +81,23 @@ class _ScreenTopicState extends State<ScreenTopic> {
         child: BlocListener<BlocTopic, StateTopic>(
           bloc: _bloc,
           listener: _handleBlocState,
-          child:(startPage == -1) ? const Center(child: CircularProgressIndicator(),) :  PagedListView.separated(
-            pagingController: _pagingController,
-            separatorBuilder: (context, index)=>Divider(color: Theme.of(context).colorScheme.primary,thickness: 0.5,),
-            builderDelegate: PagedChildBuilderDelegate<ModelEntry>(
-              itemBuilder: (context, item, index){
-                return WidgetEntry(entry: item);
-              }
+          child:(startPage == -1) ? const Center(child: CircularProgressIndicator(),) :
+          RefreshIndicator(
+            onRefresh: (){
+              startPage = -1;
+              _pagingController.refresh();
+              _bloc.add(EventTopicGet(widget.id, 1));
+              requestedPages.clear();
+              return Future.value();
+            },
+            child: PagedListView.separated(
+              pagingController: _pagingController,
+              separatorBuilder: (context, index)=>Divider(color: Theme.of(context).colorScheme.primary,thickness: 0.5,),
+              builderDelegate: PagedChildBuilderDelegate<ModelEntry>(
+                itemBuilder: (context, item, index){
+                  return WidgetEntry(entry: item);
+                }
+              ),
             ),
           ),
         ),

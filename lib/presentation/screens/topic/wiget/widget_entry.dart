@@ -36,10 +36,10 @@ class _WidgetEntryState extends State<WidgetEntry> {
   void _processImageResponse(String sourceUrl, String url, int width, int height){
     realImageUrls[sourceUrl] = url;
     if (width != 0 && height != 0) {
-      var aspect = width.toDouble() / height.toDouble();
-      if (aspect > aspectRatio) {
-        aspectRatio = aspect;
-      }
+      // var aspect = width.toDouble() / height.toDouble();
+      // if (aspect > aspectRatio) {
+      //   aspectRatio = aspect;
+      // }
     }
     setState(() {});
   }
@@ -116,19 +116,20 @@ class _WidgetEntryState extends State<WidgetEntry> {
         children: [
           Positioned.fill(
             child: PageView(
-              controller: _pageController,
+              physics: const NeverScrollableScrollPhysics(),
+              // controller: _pageController,
               children: children,
             ),
           ),
-          Positioned(
-            top: 8,
-            left: 8,
-            child: SmoothPageIndicator(
-              controller: _pageController,
-              count: realImageUrls.values.where((element) => element.isNotEmpty).length,
-              effect: WormEffect(dotWidth: 8,dotHeight: 8,spacing: 4,dotColor: Colors.white,activeDotColor: Theme.of(context).colorScheme.primary),
-            ),
-          ),
+          // Positioned(
+          //   top: 8,
+          //   left: 8,
+          //   child: SmoothPageIndicator(
+          //     controller: _pageController,
+          //     count: realImageUrls.values.where((element) => element.isNotEmpty).length,
+          //     effect: WormEffect(dotWidth: 8,dotHeight: 8,spacing: 4,dotColor: Colors.white,activeDotColor: Theme.of(context).colorScheme.primary),
+          //   ),
+          // ),
         ],
       ),
     );
@@ -139,7 +140,6 @@ class _WidgetEntryState extends State<WidgetEntry> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.entry.id != widget.entry.id) {
       realImageUrls.clear();
-      aspectRatio = 1.0;
     }
   }
 }
