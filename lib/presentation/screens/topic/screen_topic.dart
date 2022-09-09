@@ -77,7 +77,7 @@ class _ScreenTopicState extends State<ScreenTopic> {
           listener: _handleBlocState,
           child:(startPage == -1) ? const Center(child: CircularProgressIndicator(),) :  PagedListView.separated(
             pagingController: _pagingController,
-            separatorBuilder: (context, index)=>const Divider(),
+            separatorBuilder: (context, index)=>Divider(color: Theme.of(context).colorScheme.primary,thickness: 0.5,),
             builderDelegate: PagedChildBuilderDelegate<ModelEntry>(
               itemBuilder: (context, item, index){
                 return WidgetEntry(entry: item);

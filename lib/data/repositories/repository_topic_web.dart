@@ -7,6 +7,7 @@ import 'package:eksigram/domain/model/response/res_topic.dart';
 import 'package:eksigram/domain/repository/repository_topic.dart';
 import 'package:flutter/foundation.dart';
 import 'package:html/parser.dart' as parser;
+import 'package:http/http.dart' as http;
 class RepositoryTopicImplWeb extends RepositoryTopic{
 
   late final NetworkClient _networkClient;
@@ -17,7 +18,15 @@ class RepositoryTopicImplWeb extends RepositoryTopic{
   }
 
   @override
-  Future<Either<ResTopic, Failure?>> getTopic(String id,int page) {
+  Future<Either<ResTopic, Failure?>> getTopic(String id,int page) async{
+    // return http.get(Uri.parse("https://eksisozluk.com/$id?p=$page"))
+    // .then((response){
+    //   if(response.statusCode != 200){
+    //     debugPrint("Error getting post");
+    //     return const Right(null);
+    //   }
+    //   return Left(_parseHtmlResponse(id, response.body));
+    // });
     return _networkClient.get("/$id", {"p":page}, (data){
       return _parseHtmlResponse(id,data);
     });

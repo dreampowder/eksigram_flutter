@@ -1,8 +1,10 @@
 import 'package:eksigram/common/injection_container.dart';
-import 'package:eksigram/presentation/screens/topic/screen_topic.dart';
 import 'package:eksigram/presentation/theme/color_schemes_g.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter/foundation.dart';
+
+import 'presentation/screens/topic/screen_topic.dart';
 
 void main() {
   initializeInjections();
@@ -18,7 +20,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(useMaterial3: true, colorScheme: lightColorScheme,fontFamily: GoogleFonts.poppins().fontFamily),
       darkTheme: ThemeData(useMaterial3: true, colorScheme: darkColorScheme,fontFamily: GoogleFonts.poppins().fontFamily),
-      home: const ScreenTopic(id: "anin-fotografi--6459985",),
+      home: kIsWeb ?const Center(
+          child: SizedBox(
+            width: 800,
+            child: ScreenTopic(id: "anin-fotografi--6459985",))) : const ScreenTopic(id: "anin-fotografi--6459985",),
     );
   }
 }
