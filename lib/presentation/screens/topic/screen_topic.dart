@@ -60,7 +60,7 @@ class _ScreenTopicState extends State<ScreenTopic> {
   void _showInfo(){
     showDialog(context: context, builder: (context)=>AlertDialog(
       title: const Text("eksigram"),
-      content: const Text("Bu uygulama; kar amacı gütmeden, sadece eğitim amacı ile hazırlanmıştır. uygulamanın kaynak koduna 'https://github.com/dreampowder/eksigram_flutter' adresi üzerinden erişebilirsiniz."),
+      content: const Text("Bu uygulama; kar amacı gütmeden, sadece eğitim amacı ile hazırlanmıştır. uygulamanın kaynak koduna 'https://github.com/stellar-projects/eksigram_flutter' adresi üzerinden erişebilirsiniz."),
       actions: [
         TextButton(onPressed: (){Navigator.of(context).pop();}, child: const Text("e bundan bana ne?"))
       ],

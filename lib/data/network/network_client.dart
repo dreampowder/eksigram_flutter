@@ -6,6 +6,7 @@ import 'package:eksigram/domain/model/entity/model_failure.dart';
 
 abstract class NetworkClient{
   Future<Either<T, Failure?>> get<T>(String path, Map<String,dynamic>? queryParameters, T Function(dynamic) dataConstructor,{String? customFullUrl});
+  Future<Either<T, Failure?>> post<T>(String path,Map<String, dynamic>? queryParameters,dynamic postBody, T Function(dynamic) dataConstructor);
 }
 
 class NetworkClientDio extends NetworkClient{
@@ -31,7 +32,6 @@ class NetworkClientDio extends NetworkClient{
     return Future.value(dio);
   }
 
-
   @override
   Future<Either<T, Failure?>> get<T>(String path, Map<String, dynamic>? queryParameters, T Function(dynamic p1) dataConstructor,{String? customFullUrl}) async{
     var client = await getClient();
@@ -43,6 +43,21 @@ class NetworkClientDio extends NetworkClient{
     }).catchError((error, stackTrace){
       // print("error: $error");
       // print("stack: $stackTrace");
+      if(error is DioError){
+        print("RESPONSE: ${error.type}");
+      }
+      completer.complete(Right(RemoteFailure("remote failure on $path",error)));
+    });
+    return completer.future;
+  }
+
+  @override
+  Future<Either<T, Failure?>> post<T>(String path, Map<String, dynamic>? queryParameters, postBody, T Function(dynamic p1) dataConstructor) async{
+    var client = await getClient();
+    var completer = Completer<Either<T, Failure?>>();
+    client.post("$baseUrl$path",queryParameters: queryParameters,data: postBody).then((result){
+      completer.complete(Left(dataConstructor(result.data)));
+    }).catchError((error, stackTrace){
       if(error is DioError){
         print("RESPONSE: ${error.type}");
       }

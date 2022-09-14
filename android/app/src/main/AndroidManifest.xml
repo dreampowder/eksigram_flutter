@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.stellar.eksigram.eksigram">
+    <uses-permission android:name="android.permission.INTERNET" />
    <application
         android:label="eksigram"
         android:name="${applicationName}"
